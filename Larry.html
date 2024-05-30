@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Prosper.io - Engineer Your Future</title>
+    <style>
+        /* Practice Page Styling */
+        #practice {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px; /* Slightly more rounded corners */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15); /* Increased shadow for depth */
+            max-width: 600px;  /* Adjusted for question and answer length */
+            margin: 2rem auto; /* Centered on the page */
+        }
+
+        #question {
+            font-size: 1.2rem; /* Slightly larger font for the question */
+            margin-bottom: 1.5rem;
+            font-weight: 600; /* Slightly bolder text */
+        }
+
+        #options {
+            margin-bottom: 1.5rem; /* Space between options and button */
+        }
+
+        #options label {
+            display: block; /* Display each option on a new line */
+            margin-bottom: 0.8rem;
+        }
+
+        #options input[type="radio"] {
+            margin-right: 0.5rem; /* Space between radio button and label */
+        }
+
+        #submit {
+            background-color: #007bff; /* Primary color for the button */
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease; /* Hover effect */
+        }
+
+        #submit:hover {
+            background-color: #0056b3; /* Slightly darker on hover */
+        }
+
+        #feedback {
+            margin-top: 1rem;
+            font-weight: bold;
+            color: #007bff; /* Primary color for feedback text */
+        }
+
+        #feedback.correct {
+            color: green; /* Green for correct answers */
+        }
+
+        #feedback.incorrect {
+            color: red; /* Red for incorrect answers */
+        }
+        #curry{
+            background-color: blue;
+            color:azure;
+            font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <section id="home">
+       
+        </section>
+
+        <section id="practice">
+            <h2>Engineering Challenge</h2>
+            <div id="question"></div>
+            <form id="options"></form>
+            <button type="button" id="submit">Submit</button>
+            <div id="feedback"></div>
+        </section>
+    </main>
+
+    <footer>
+    </footer>
+
+    <script>
+        // Question Data
+        const questions = [
+            {
+                question: "Which of the following is NOT a renewable energy source?",
+                options: ["Solar", "Wind", "Coal", "Hydroelectric"],
+                answer: "Coal"
+            },
+            {
+                question: "What is the primary force that allows airplanes to fly?",
+                options: ["Gravity", "Thrust", "Lift", "Drag"],
+                answer: "Lift"
+            },
+            {
+                question: "Which of these materials is the best conductor of electricity?",
+                options: ["Wood", "Plastic", "Rubber", "Copper"],
+                answer: "Copper"
+            },
+            {
+                question: "What does STEM stand for?",
+                options: ["Science, Technology, Engineering, Mathematics", "Science, Teaching, Environment, Mathematics", "Space, Time, Energy, Matter", "Structure, Texture, Engineering, Mechanics"],
+                answer: "Science, Technology, Engineering, Mathematics"
+            },
+            {
+                question: "Which of the following is a unit of measurement for force?",
+                options: ["Watt", "Newton", "Joule", "Ampere"],
+                answer: "Newton"
+            }
+        ];
+
+        // DOM References
+        const homeSection = document.getElementById("home");
+        const practiceSection = document.getElementById("practice");
+        const questionElement = document.getElementById("question");
+        const optionsForm = document.getElementById("options");
+        const submitButton = document.getElementById("submit");
+        const feedbackElement = document.getElementById("feedback");
+        const homeButton = document.createElement("button"); // Create the home button
+
+        // Quiz State
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        // Function to show/hide sections
+        function showPage(page) {
+            homeSection.style.display = page === "home" ? "block" : "none";
+            practiceSection.style.display = page === "practice" ? "block" : "none";
+        }
+
+        // Function to load the next question
+        function loadQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            questionElement.textContent = currentQuestion.question;
+            optionsForm.innerHTML = ""; 
+
+            currentQuestion.options.forEach((option, index) => {
+                const label = document.createElement("label");
+                const radio = document.createElement("input");
+                radio.type = "radio";
+                radio.name = "answer";
+                radio.value = option;
+                label.appendChild(radio);
+                label.appendChild(document.createTextNode(option));
+                optionsForm.appendChild(label);
+                optionsForm.appendChild(document.createElement("br")); 
+            });
+
+            feedbackElement.textContent = ""; 
+            feedbackElement.classList.remove("correct", "incorrect"); // Remove previous feedback classes
+            homeButton.style.display = "none"; // Hide the home button if it's visible
+        }
+
+        // Function to check the answer and move to the next question or end the quiz
+        function checkAnswer() {
+            const selectedOption = document.querySelector('input[name="answer"]:checked');
+
+            if (!selectedOption) {
+                feedbackElement.textContent = "Please select an answer.";
+                return;
+            }
+
+            const currentQuestion = questions[currentQuestionIndex];
+            if (selectedOption.value === currentQuestion.answer) {
+                feedbackElement.textContent = "Correct!";
+                feedbackElement.classList.add("correct");
+                score++;
+            } else {
+                feedbackElement.textContent = `Incorrect. The correct answer was ${currentQuestion.answer}.`;
+                feedbackElement.classList.add("incorrect");
+            }
+
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex < questions.length) {
+                setTimeout(loadQuestion, 1000); 
+            } else {
+                feedbackElement.textContent = `Quiz completed! Your score: ${score}/${questions.length}`;
+                submitButton.disabled = true;
+
+                // Show the home button
+                homeButton.textContent = "Return to Home";
+                homeButton.addEventListener("click", () => {
+                    showPage("home");
+                    currentQuestionIndex = 0; 
+                    score = 0;
+                    loadQuestion(); 
+                });
+                feedbackElement.appendChild(homeButton);
+            }
+        }
+
+        // Event Listeners
+        submitButton.addEventListener("click", checkAnswer);
+
+        // Initialize the quiz by showing the practice page and loading the first question
+        showPage("practice");
+        loadQuestion();
+    </script>
+    <center>
+        <a  id="Curry"  href="index.html">Home</a>
+    </center>
+   
+</body>
+</html>
